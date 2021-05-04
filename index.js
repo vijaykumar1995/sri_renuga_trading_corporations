@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
@@ -18,7 +19,12 @@ mongoose.connect(process.env.MONGODB_URL, {
   useCreateIndex: true
 });
 
+app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.locals.appExpress = app;
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
+});
 
 const port = process.env.PORT || 5000;
 app.listen(port);
