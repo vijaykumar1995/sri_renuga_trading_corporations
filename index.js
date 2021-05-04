@@ -5,6 +5,8 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
+import employee from './routes/employee';
+
 dotenv.config();
 const app = express();
 global.app = app;
@@ -21,6 +23,8 @@ mongoose.connect(process.env.MONGODB_URL, {
 
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.locals.appExpress = app;
+
+app.use('/api/employee', employee);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
