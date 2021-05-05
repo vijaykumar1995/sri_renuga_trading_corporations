@@ -24,8 +24,7 @@ if (localStorage.SRTJWT) {
 	
 		const user = {
 			token: localStorage.SRTJWT,
-			email: payload.email,
-			confirmed: localStorage.validated
+			ph_number: payload.ph_number
 		};
 		setAuthorizationHeader(localStorage.SRTJWT);
 		store.dispatch(userLoggedIn(user));
