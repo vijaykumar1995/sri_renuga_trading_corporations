@@ -1,19 +1,23 @@
-import logo from './logo.svg';
-import { BrowserRouter as Router } from 'react-router-dom';
-import { Route, Switch } from "react-router-dom";
+import GuestRoute from './components/routes/GuestRoute';
+import UserRoute from './components/routes/UserRoute'
 import SignupPage from '../src/components/pages/SignupPage';
 import './App.css';
+import PropTypes from "prop-types";
+import LoginPage from './components/pages/LoginPage';
 
-function App() {
+function App({location}) {
   return (
-    <Router>
-      <Switch>
-        <Route path='/'>
-          <SignupPage />
-        </Route>
-      </Switch>
-    </Router>
+    <>
+    <UserRoute location = { location } path = "/signup" exact component={SignupPage} />
+    <GuestRoute location = { location } path = "/" exact component={LoginPage} />
+    </>
   );
 }
+
+App.propTypes = {
+	location: PropTypes.shape({
+		pathname: PropTypes.string.isRequired
+	}).isRequired
+};
 
 export default App;

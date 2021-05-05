@@ -2,6 +2,7 @@
 import mongoose from 'mongoose';
 import uniqueValidator from 'mongoose-unique-validator';
 import passwordHash from 'password-hash';
+import jwt from "jsonwebtoken"
 
 const employeeSchema = new mongoose.Schema(
   {
@@ -32,5 +33,22 @@ const employeeSchema = new mongoose.Schema(
 employeeSchema.plugin(uniqueValidator, {
   message: 'Email ID and employee ID must be unique.'
 });
+
+employeeSchema.methods.toAuthJSON = function toAuthJSON() {
+  return{
+    ph_number: this.ph_number,
+    role: this.role,
+    token: this.generateJWt()
+  }
+};
+
+employeeSchema.methods.generateJWt = function generateJWt(){
+  return jwt.sign({
+    ph_number: this.ph_number,
+    role: this.role
+  }, 
+  process.env.JWT_SECRET
+  )
+}
 
 export default mongoose.model('Employees', employeeSchema);

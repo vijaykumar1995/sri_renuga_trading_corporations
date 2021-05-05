@@ -41,4 +41,20 @@ router.post('/', async (req, res) => {
   }
 });
 
+router.post('/login', (req, res) => {
+  Users.findOne({ph_number:req.body.data.ph_number}).then(response =>{
+    if(response!=null){
+      if(passwordHash.verify(req.body.data.password, response.password)){
+        res.json({user: response.toAuthJSON()})
+      }
+      else{
+        res.status(400).json("Password incorrect")
+      }
+    }
+    else{
+      res.status(400).json("Phone Number does not exist")
+    }
+  })
+})
+
 export default router;
