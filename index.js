@@ -6,6 +6,7 @@ import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
 import employee from './routes/employee';
+import categories from './routes/categories';
 
 dotenv.config();
 const app = express();
@@ -24,6 +25,7 @@ mongoose.connect(process.env.MONGODB_URL, {
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.locals.appExpress = app;
 
+app.use('/api/categories', categories);
 app.use('/api/employee', employee);
 
 app.get('*', (req, res) => {
