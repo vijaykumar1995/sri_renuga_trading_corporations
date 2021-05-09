@@ -1,5 +1,6 @@
 import React from 'react';
 import CategoriesForm from '../forms/CategoriesForm';
+import Navbar from '../navbar/navigation/navbar';
 
 class CategoriesPage extends React.Component {
   state = {
@@ -10,6 +11,7 @@ class CategoriesPage extends React.Component {
   render() {
     return(
       <div>
+        <Navbar />
         <CategoriesForm />
       </div>
       

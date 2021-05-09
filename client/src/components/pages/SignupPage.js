@@ -6,6 +6,7 @@ import {
   Message
 } from 'semantic-ui-react';
 import axios from 'axios';
+import Navbar from '../navbar/navigation/navbar';
 
 class SignupPage extends React.Component {
 
@@ -185,6 +186,7 @@ class SignupPage extends React.Component {
     ]
     return(
       <div>
+        <Navbar />
         <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
           <p style={{fontSize:"2.3rem",textAlign:"center"}}>Sri Renuga Trading Corporation</p>
           <p style={{marginTop:"-35px", textAlign:"center"}}>Enter the sign up details</p>
