@@ -66,7 +66,7 @@ class LoginPage extends React.Component {
     return(
       <div>
         <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
-          <p style={{fontSize:"2.3rem",textAlign:"center"}}>Sri Renuka Trading Corporation</p>
+          <p style={{fontSize:"2.3rem",textAlign:"center"}}>Sri Renuga Trading Corporation</p>
           <p style={{marginTop:"-35px", marginBottom:"30px", textAlign:"center"}}>Enter your credentials to login</p>
           <Form>
             <Form.Field error={this.state.success === 'false'}>

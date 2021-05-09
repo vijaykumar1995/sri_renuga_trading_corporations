@@ -2,14 +2,14 @@ import React from 'react';
 import { Button, Form, Message, Modal } from 'semantic-ui-react';
 import api from '../../api';
 
-class EditCategoriesModal extends React.Component {
+class EditWeightModal extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       data: {
-        name: props.category.name,
-        _id: props.category._id
+        name: props.weight.name,
+        _id: props.weight._id
       },
       success: '',
       message: '',
@@ -35,13 +35,14 @@ class EditCategoriesModal extends React.Component {
       this.setState({
         ...this.state,
         success: 'false',
-        message: 'Category name is required'
+        message: 'Weight name is required'
       })
     } else {
-      api.categories.update(this.state.data).then((res) => {
+      
+      api.weight.update(this.state.data).then((res) => {
         this.setState({
           ...this.state,
-          message: 'Categories updated successfully',
+          message: 'Weight updated successfully',
           success: 'true',
           open: false
         })
@@ -76,16 +77,16 @@ class EditCategoriesModal extends React.Component {
         }}  circular size='medium' icon='edit' />
         }>
         <Modal.Header>
-          Edit Category
+          Edit Weight
         </Modal.Header>
         <Modal.Content>
         <Form >
           <Form.Field error={this.state.success === 'false'}>
-            <label style={{ fontSize: '15px', fontWeight: '55' }}>Category Name</label>
+            <label style={{ fontSize: '15px', fontWeight: '55' }}>Weight</label>
             <input 
               value={this.state.data.name}
               type='text' 
-              placeholder='Enter the Category Name' 
+              placeholder='Enter the Weight' 
               onChange={(e) => {this.onChangeName(e)}} 
             />
           </Form.Field>
@@ -120,4 +121,4 @@ class EditCategoriesModal extends React.Component {
   }
 }
 
-export default EditCategoriesModal;
+export default EditWeightModal;

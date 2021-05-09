@@ -10,5 +10,11 @@ export default {
     get: () => axios.get('/api/categories').then(res => res.data),
     update: (data) => axios.put('/api/categories', {data: data}).then(res => res.data),
     delete: (data) => axios.delete('/api/categories', {data: data}).then(res => res.data)
+  },
+  weight: {
+    create: data => axios.post('/api/weight', { data: data }).then(res => res.data),
+    get: () => axios.get('/api/weight').then(res => res.data),
+    update: (data) => axios.put('/api/weight', {data: data}).then(res => res.data),
+    delete: (data) => axios.delete('/api/weight', {data: data}).then(res => res.data)
   }
 };

@@ -2,13 +2,13 @@ import React from 'react';
 import { Button, Modal } from 'semantic-ui-react';
 import api from '../../api';
 
-class DeleteCategoriesModal extends React.Component {
+class DeleteWeightModal extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
       data: {
-        _id: props.category._id
+        _id: props.weight._id
       },
       success: '',
       message: '',
@@ -18,10 +18,10 @@ class DeleteCategoriesModal extends React.Component {
 
   onClickSubmit = (e) => {
     e.preventDefault();
-    api.categories.delete(this.state.data).then((res) => {
+    api.weight.delete(this.state.data).then((res) => {
       this.setState({
         ...this.state,
-        message: 'Category deleted successfully',
+        message: 'weight deleted successfully',
         success: 'true',
         open: false
       })
@@ -62,7 +62,7 @@ class DeleteCategoriesModal extends React.Component {
         />
         }>
         <Modal.Header>
-          Edit Category
+          Delete Weight
         </Modal.Header>
         <Modal.Content>
           <p>Do you want to delete this record?</p>
@@ -89,4 +89,4 @@ class DeleteCategoriesModal extends React.Component {
   }
 }
 
-export default DeleteCategoriesModal;
+export default DeleteWeightModal;

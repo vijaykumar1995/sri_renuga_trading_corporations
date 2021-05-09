@@ -5,8 +5,9 @@ import bodyParser from 'body-parser';
 import dotenv from 'dotenv';
 import mongoose from 'mongoose';
 
-import employee from './routes/employee';
 import categories from './routes/categories';
+import employee from './routes/employee';
+import weight from './routes/weight';
 
 dotenv.config();
 const app = express();
@@ -27,6 +28,7 @@ app.locals.appExpress = app;
 
 app.use('/api/categories', categories);
 app.use('/api/employee', employee);
+app.use('/api/weight', weight);
 
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'client', 'build', 'index.html'));
