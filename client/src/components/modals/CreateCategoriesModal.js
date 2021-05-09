@@ -26,7 +26,7 @@ class CreateCategoriesModal extends React.Component {
         name: e.target.value
       }
     });
-    window.location.reload();
+    
   }
 
   onClickSubmit = (e) => {
@@ -53,6 +53,7 @@ class CreateCategoriesModal extends React.Component {
           success: 'false'
         })
       })
+      window.location.reload();
     }
   }
 
