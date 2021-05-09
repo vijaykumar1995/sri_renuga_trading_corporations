@@ -25,7 +25,8 @@ class CreateCategoriesModal extends React.Component {
         ...this.state.data,
         name: e.target.value
       }
-    })
+    });
+    window.location.reload();
   }
 
   onClickSubmit = (e) => {
