@@ -57,15 +57,23 @@ class Categories extends React.Component {
                 }}>
             <Table.Header>
               <Table.Row> 
-                <Table.HeaderCell width='14'>Category Name</Table.HeaderCell>
+                <Table.HeaderCell width='6'>Category Name</Table.HeaderCell>
+                <Table.HeaderCell width='4'>HSN Code</Table.HeaderCell>
+                <Table.HeaderCell width='4'>GST Percentage</Table.HeaderCell>
                 <Table.HeaderCell width='2'>Actions</Table.HeaderCell>
             </Table.Row>
             </Table.Header>
             <Table.Body>
               {this.state.categoriesList.map((category, index) => (
                 <Table.Row key={index}>
-                <Table.Cell width='14'>
+                <Table.Cell width='6'>
                   {category.name}
+                </Table.Cell>
+                <Table.Cell width='4'>
+                  {category.hsn_code}
+                </Table.Cell>
+                <Table.Cell width='4'>
+                  {category.gst_percentage}
                 </Table.Cell>
                 <Table.Cell width='2'>
                   <EditCategoriesModal category={category} />

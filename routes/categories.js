@@ -30,7 +30,9 @@ router.get('/', (req, res) => {
 
 router.put('/', (req, res) => {
   Categories.findByIdAndUpdate({_id: req.body.data._id}, {
-    name: req.body.data.name
+    name: req.body.data.name,
+    hsn_code: req.body.data.hsn_code,
+    gst_percentage: req.body.data.gst_percentage
   }).then((response) => {
     res.status(200).json('Category is successfully updated');
   }).catch((err) => {

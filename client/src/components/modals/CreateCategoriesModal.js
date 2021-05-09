@@ -8,7 +8,9 @@ class CreateCategoriesModal extends React.Component {
     super(props);
     this.state = {
       data: {
-        name: ''
+        name: '',
+        gst_percentage: '',
+        hsn_code: ''
       },
       success: '',
       message: '',
@@ -26,16 +28,44 @@ class CreateCategoriesModal extends React.Component {
         name: e.target.value
       }
     });
+  }
+
+  onChangeGstPercentage = (e) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      success: '',
+      data: {
+        ...this.state.data,
+        gst_percentage: e.target.value
+      }
+    });
     
+  }
+
+  onChangeHsnCode = (e) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      success: '',
+      data: {
+        ...this.state.data,
+        hsn_code: e.target.value
+      }
+    });
   }
 
   onClickSubmit = (e) => {
     e.preventDefault();
-    if(this.state.data.name === '') {
+    if(
+      this.state.data.name === '' ||
+      this.state.data.gst_percentage === '' ||
+      this.state.data.hsn_code === ''
+    ) {
       this.setState({
         ...this.state,
         success: 'false',
-        message: 'Category name is required'
+        message: 'All the fields are required'
       })
     } else {
       api.categories.create(this.state.data).then((res) => {
@@ -84,7 +114,7 @@ class CreateCategoriesModal extends React.Component {
         <Modal.Content>
         <Form >
           <Form.Field error={this.state.success === 'false'}>
-            <label style={{ fontSize: '15px', fontWeight: '55' }}>Category Name</label>
+            <label>Category Name</label>
             <input 
               value={this.state.data.name}
               type='text' 
@@ -92,6 +122,24 @@ class CreateCategoriesModal extends React.Component {
               onChange={(e) => {this.onChangeName(e)}} 
             />
           </Form.Field>
+          <Form.Group>
+          <Form.Field style ={{ width: '50%' }} error={this.state.success === 'false'}>
+            <label>GST Percentage</label>
+            <input
+             type='Number' 
+             placeholder='Enter the GST Percentage'
+             onChange={(e) => {this.onChangeGstPercentage(e)}}
+            />
+          </Form.Field>
+          <Form.Field style ={{ width: '50%' }} error={this.state.success === 'false'}>
+            <label>HSN Code</label>
+            <input 
+              type='Number' 
+              placeholder='Enter the HSN code'
+              onChange={(e) => {this.onChangeHsnCode(e)}}
+            />
+          </Form.Field>
+          </Form.Group>
             
             {this.state.success === 'false' && (
               <Message negative style={{textAlign: 'center'}}>{this.state.message}</Message>

@@ -7,6 +7,14 @@ const categoriesSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true
+    },
+    gst_percentage: {
+      type: Number,
+      required: true
+    },
+    hsn_code: {
+      type: Number,
+      required: true
     }
   },
   { timestamps: true }

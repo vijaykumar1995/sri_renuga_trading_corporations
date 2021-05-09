@@ -9,7 +9,9 @@ class EditCategoriesModal extends React.Component {
     this.state = {
       data: {
         name: props.category.name,
-        _id: props.category._id
+        _id: props.category._id,
+        gst_percentage: props.category.gst_percentage,
+        hsn_code: props.category.hsn_code
       },
       success: '',
       message: '',
@@ -29,13 +31,44 @@ class EditCategoriesModal extends React.Component {
     })
   }
 
+  onChangeGstPercentage = (e) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      success: '',
+      data: {
+        ...this.state.data,
+        gst_percentage: e.target.value
+      }
+    });
+    
+  }
+
+  onChangeHsnCode = (e) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      success: '',
+      data: {
+        ...this.state.data,
+        hsn_code: e.target.value
+      }
+    });
+  }
+
   onClickSubmit = (e) => {
     e.preventDefault();
-    if(this.state.data.name === '') {
+    if(
+      this.state.data.name === '' ||
+      this.state.data.gst_percentage === '' ||
+      this.state.data.gst_percentage === null ||
+      this.state.data.hsn_code === '' ||
+      this.state.data.hsn_code === null
+    ) {
       this.setState({
         ...this.state,
         success: 'false',
-        message: 'Category name is required'
+        message: 'All the fields are required'
       })
     } else {
       api.categories.update(this.state.data).then((res) => {
@@ -89,6 +122,24 @@ class EditCategoriesModal extends React.Component {
               onChange={(e) => {this.onChangeName(e)}} 
             />
           </Form.Field>
+          <Form.Group>
+            <Form.Field style ={{ width: '50%' }} error={this.state.success === 'false'}>
+              <label>GST Percentage</label>
+              <input
+              type='Number' 
+              placeholder='Enter the GST Percentage'
+              onChange={(e) => {this.onChangeGstPercentage(e)}}
+              />
+            </Form.Field>
+            <Form.Field style ={{ width: '50%' }} error={this.state.success === 'false'}>
+              <label>HSN Code</label>
+              <input 
+                type='Number' 
+                placeholder='Enter the HSN code'
+                onChange={(e) => {this.onChangeHsnCode(e)}}
+              />
+            </Form.Field>
+          </Form.Group>
             
             {this.state.success === 'false' && (
               <Message negative style={{textAlign: 'center'}}>{this.state.message}</Message>
