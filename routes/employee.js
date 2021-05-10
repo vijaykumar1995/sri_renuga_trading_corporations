@@ -57,4 +57,13 @@ router.post('/login', (req, res) => {
   })
 })
 
+router.get('/profile_details', (req, res) => {
+  console.log('inside the profile')
+  Users.findOne({ ph_number: req.query.ph_number }).then((response) => {
+    res.status(200).json({details: response});
+  }).catch(err => {
+    res.status(400).json(err.errors.name.properties.message);
+  })
+})
+
 export default router;
