@@ -102,7 +102,7 @@ router.get('/csv_download', async(req, res) => {
     const products = await Product.find({}, {_id: 0, createdAt: 0, updatedAt: 0, __v:0})
     const path = "./client/build/reports";
     fs.existsSync(path) || fs.mkdirSync(path); //creating reports folder if it doesnt already exist
-    var requestId = 'R' + shortId.generate() + - 'Products'
+    var requestId = 'R' + shortId.generate() + '- Products'
     var fileName = requestId + '.csv';
     const filePath = path + '/' + fileName;
     const fields = [
