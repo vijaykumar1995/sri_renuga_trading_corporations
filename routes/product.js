@@ -91,8 +91,8 @@ router.post('/csv_upload', async(req, res) => {
     }
     res.status(200).json('Successfully updated');
   } catch(e) {
-    console.log(e.errors.name.properties.message)
-    res.status(400).json(e.errors.name.properties.message);
+    console.log(e)
+    res.status(400).json(err);
   }
   
 })
