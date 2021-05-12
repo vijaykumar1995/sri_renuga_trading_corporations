@@ -11,6 +11,8 @@ class EditWeightModal extends React.Component {
         name: props.weight.name,
         _id: props.weight._id
       },
+      old_name: props.weight.name,
+      old_id: props.weight._id,
       success: '',
       message: '',
       open: false
@@ -65,7 +67,14 @@ class EditWeightModal extends React.Component {
         onClose={(e) => {
           this.setState({
             ...this.state,
-            open: false
+            open: false,
+            success: '',
+            message: '',
+            data: {
+              ...this.state.data,
+              name: this.state.old_name,
+              _id: this.state.old_id
+            },
           })
         }} 
         open={this.state.open} 
@@ -103,7 +112,15 @@ class EditWeightModal extends React.Component {
           <Button.Group>
             <Button onClick={(e) => {
               this.setState({
-                open: false
+                ...this.state,
+                open: false,
+                success: '',
+                message: '',
+                data: {
+                  ...this.state.data,
+                  name: this.state.old_name,
+                  _id: this.state.old_id
+                },
               })
             }}>Cancel</Button>
             <Button.Or />

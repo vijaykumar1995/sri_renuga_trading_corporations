@@ -94,7 +94,15 @@ class CreateCategoriesModal extends React.Component {
         onClose={(e) => {
           this.setState({
             ...this.state,
-            open: false
+            open: false,
+            data: {
+              ...this.state.data,
+              name: '',
+              gst_percentage: '',
+              hsn_code: ''
+            },
+            success: '',
+            message: '',
           })
         }} 
         open={this.state.open} 

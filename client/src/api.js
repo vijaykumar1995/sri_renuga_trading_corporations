@@ -16,5 +16,11 @@ export default {
     get: () => axios.get('/api/weight').then(res => res.data),
     update: (data) => axios.put('/api/weight', {data: data}).then(res => res.data),
     delete: (data) => axios.delete('/api/weight', {data: data}).then(res => res.data)
+  },
+  product: {
+    create: data => axios.post('/api/products', { data: data }).then(res => res.data),
+    get: () => axios.get('/api/products').then(res => res.data),
+    delete: (data) => axios.delete('/api/products', {data: data}).then(res => res.data),
+    update: (data) => axios.put('/api/products', {data: data}).then(res => res.data)
   }
 };

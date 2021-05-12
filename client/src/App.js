@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import CategoriesPage from './components/pages/CategoriesPage';
 import LoginPage from './components/pages/LoginPage';
+import ProductPage from './components/pages/ProductPage';
 import SignupPage from '../src/components/pages/SignupPage';
 import WeightPage from '../src/components/pages/WeightPage';
 
@@ -14,6 +15,7 @@ function App({location}) {
     <>
     <UserRoute location={ location } path='/categories' exact component={CategoriesPage} />
     <GuestRoute location = { location } path = "/" exact component={LoginPage} />
+    <UserRoute location = {location} path = '/products' exact component={ProductPage} />
     <UserRoute location = { location } path = "/signup" exact component={SignupPage} />
     <UserRoute location = { location } path = "/weight" exact component={WeightPage} />
     </>

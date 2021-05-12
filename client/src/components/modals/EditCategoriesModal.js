@@ -13,6 +13,10 @@ class EditCategoriesModal extends React.Component {
         gst_percentage: props.category.gst_percentage,
         hsn_code: props.category.hsn_code
       },
+      old_name: props.category.name,
+      old_id: props.category._id,
+      old_gst_percentage: props.category.gst_percentage,
+      old_hsn_code: props.category.hsn_code,
       success: '',
       message: '',
       open: false
@@ -97,7 +101,16 @@ class EditCategoriesModal extends React.Component {
         onClose={(e) => {
           this.setState({
             ...this.state,
-            open: false
+            open: false,
+            data: {
+              ...this.data,
+              name: this.state.old_name,
+              _id: this.state.old_id,
+              gst_percentage: this.state.old_gst_percentage,
+              hsn_code: this.state.old_hsn_code
+            },
+            success: '',
+            message: '',
           })
         }} 
         open={this.state.open} 
@@ -128,6 +141,7 @@ class EditCategoriesModal extends React.Component {
               <input
               type='Number' 
               placeholder='Enter the GST Percentage'
+              value={this.state.data.gst_percentage}
               onChange={(e) => {this.onChangeGstPercentage(e)}}
               />
             </Form.Field>
@@ -136,6 +150,7 @@ class EditCategoriesModal extends React.Component {
               <input 
                 type='Number' 
                 placeholder='Enter the HSN code'
+                value={this.state.data.hsn_code}
                 onChange={(e) => {this.onChangeHsnCode(e)}}
               />
             </Form.Field>
@@ -153,7 +168,17 @@ class EditCategoriesModal extends React.Component {
           <Button.Group>
             <Button onClick={(e) => {
               this.setState({
-                open: false
+                ...this.state,
+                open: false,
+                data: {
+                  ...this.data,
+                  name: this.state.old_name,
+                  _id: this.state.old_id,
+                  gst_percentage: this.state.old_gst_percentage,
+                  hsn_code: this.state.old_hsn_code
+                },
+                success: '',
+                message: '',
               })
             }}>Cancel</Button>
             <Button.Or />

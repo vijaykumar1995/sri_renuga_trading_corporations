@@ -63,7 +63,12 @@ class CreateWeightModal extends React.Component {
         onClose={(e) => {
           this.setState({
             ...this.state,
-            open: false
+            open: false,
+            data: {
+              name: ''
+            },
+            success: '',
+            message: '',
           })
         }} 
         open={this.state.open} 
@@ -104,7 +109,13 @@ class CreateWeightModal extends React.Component {
           <Button.Group>
             <Button onClick={(e) => {
               this.setState({
-                open: false
+                ...this.state,
+                open: false,
+                data: {
+                  name: ''
+                },
+                success: '',
+                message: '',
               })
             }}>Cancel</Button>
             <Button.Or />
