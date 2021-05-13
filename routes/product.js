@@ -101,7 +101,7 @@ router.get('/csv_download', async(req, res) => {
   try {
     const products = await Product.find({}, {_id: 0, createdAt: 0, updatedAt: 0, __v:0})
     const path = "./client/build/reports";
-    fs.existsSync(path) || fs.mkdirSync(path); //creating reports folder if it doesnt already exist
+    fs.existsSync(path) || fs.mkdirSync(path, { recursive: true }); //creating reports folder if it doesnt already exist
     var requestId = 'R' + shortId.generate() + '- Products'
     var fileName = requestId + '.csv';
     const filePath = path + '/' + fileName;
@@ -147,10 +147,9 @@ router.get('/csv_download', async(req, res) => {
     const json2csvParser = new Parser({ fields });
     console.log('at line 140')
     var csv = json2csvParser.parse(products)
-    var stream = fs.createWriteStream(filePath, { flags: "a" }); //creating a write stream instance
-    stream.write(csv);
-    stream.end();
-    var fileUrl = "https://" + req.headers.host + "/products/" + fileName;
+    var stream = fs.appendFileSync(filePath, `${csv}\r\n`); //creating a write stream instance
+    
+    var fileUrl = "https://" + req.headers.host + "/reports/" + fileName;
     if(fileUrl) {
       res.status(200).json({ products_url: fileUrl })
     } else {
