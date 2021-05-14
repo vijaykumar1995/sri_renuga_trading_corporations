@@ -74,7 +74,7 @@ class VerticalNavbar extends React.Component {
             </li>
             <div className="systemView">
               <li className="list">
-                <a style={{ textDecoration: 'none', color: 'white' }}>My Dashboard</a>
+                <a style={{ textDecoration: 'none', color: 'white' }}>Dashboard</a>
               </li>
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }} href='/signup'>Manage Users</a>
@@ -87,6 +87,9 @@ class VerticalNavbar extends React.Component {
               </li>
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }} href='/products'>Product</a>
+              </li>
+              <li className="list">
+                <a style={{ textDecoration: 'none', color: 'white' }} href='/purchase_company'>Purchase Company</a>
               </li>
             </div>
             <li className="dropdown" style={{ float: 'right' }}>

@@ -8,6 +8,7 @@ import mongoose from 'mongoose';
 import categories from './routes/categories';
 import employee from './routes/employee';
 import products from './routes/product';
+import purchaseCompany from './routes/purchase_company';
 import weight from './routes/weight';
 
 dotenv.config();
@@ -30,6 +31,7 @@ app.locals.appExpress = app;
 app.use('/api/categories', categories);
 app.use('/api/employee', employee);
 app.use('/api/products', products);
+app.use('/api/purchase_company', purchaseCompany);
 app.use('/api/weight', weight);
 
 app.get('*', (req, res) => {

@@ -195,7 +195,7 @@ class Products extends React.Component {
                   </Form.Group>
                   <Button onClick={(e) => { this.onClickDownloadButton(e) }} color='green' style={{position: 'absolute', top: '0', right: '185px'}}><Icon name='download' />Download Products</Button>
                   
-                  <ImportCSVModal/>
+                  <ImportCSVModal name='products'/>
                   
                 </Form>
                 

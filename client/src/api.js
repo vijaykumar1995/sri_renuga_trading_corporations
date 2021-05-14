@@ -22,5 +22,11 @@ export default {
     get: () => axios.get('/api/products').then(res => res.data),
     delete: (data) => axios.delete('/api/products', {data: data}).then(res => res.data),
     update: (data) => axios.put('/api/products', {data: data}).then(res => res.data)
+  },
+  purchase_company: {
+    create: data => axios.post('/api/purchase_company', { data: data }).then(res => res.data),
+    get: () => axios.get('/api/purchase_company').then(res => res.data),
+    update: (data) => axios.put('/api/purchase_company', {data: data}).then(res => res.data),
+    delete: (data) => axios.delete('/api/purchase_company', {data: data}).then(res => res.data)
   }
 };
