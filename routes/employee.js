@@ -17,27 +17,53 @@ router.post('/', async (req, res) => {
     if (_.isEmpty(req.body.data.ph_number)) {
       res.status(400).json({ errors: 'Phone number must be filled out' });
     } else {
-      const hashedPassword = passwordHash.generate(req.body.data.password);
-      Users.create({
-        role: req.body.data.role,
-        name: req.body.data.name,
-        ph_number: req.body.data.ph_number,
-        email_id: req.body.data.email_id,
-        password: hashedPassword
-      })
+      if(req.body.data.email_id == null|| req.body.data.email_id === '') {
+        const hashedPassword = passwordHash.generate(req.body.data.password);
+        Users.create({
+          role: req.body.data.role,
+          name: req.body.data.name,
+          ph_number: req.body.data.ph_number,
+          email_id: req.body.data.email_id,
+          password: hashedPassword
+        })
         .then((response) => {
           console.log(response);
           // signupResetPasswordLink(response);
-          res.json(response);
+          res.status(200).json(response);
         })
         .catch((err) => {
           // eslint-disable-next-line no-console
-          console.log(err.message);
+          console.log('in err ',err.message);
           res.status(400).json('Phone Number must be unique');
         });
+      } else {
+        let user =await  Users.findOne({ email_id: req.body.data.email_id });
+        if(user == null) {
+          Users.create({
+            role: req.body.data.role,
+            name: req.body.data.name,
+            ph_number: req.body.data.ph_number,
+            password: hashedPassword
+          })
+          .then((response) => {
+            console.log(response);
+            // signupResetPasswordLink(response);
+            res.json(response);
+          })
+          .catch((err) => {
+            // eslint-disable-next-line no-console
+            console.log(err.message);
+            res.status(400).json('Phone Number must be unique');
+          });
+        } else {
+          res.status(400).json('Email Id must be unique');
+        }
+      }
+      
     }
   } catch (e) {
     console.log(e);
+    res.status(400).json('Error occured while creating an employee')
   }
 });
 
