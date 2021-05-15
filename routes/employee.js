@@ -23,7 +23,6 @@ router.post('/', async (req, res) => {
           role: req.body.data.role,
           name: req.body.data.name,
           ph_number: req.body.data.ph_number,
-          email_id: req.body.data.email_id,
           password: hashedPassword
         })
         .then((response) => {
