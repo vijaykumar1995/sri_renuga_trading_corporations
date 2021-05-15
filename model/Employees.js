@@ -11,8 +11,7 @@ const employeeSchema = new mongoose.Schema(
       required: true
     },
     email_id: {
-      type: String,
-      unique: true
+      type: String
     },
     role: {
       type: String,
