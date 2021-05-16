@@ -73,7 +73,7 @@ class VerticalNavbar extends React.Component {
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }}>Dashboard</a>
               </li>
-              {this.state.details.role === 'Management' && (
+              {(this.state.details.role === 'Management' || this.state.details.role === 'Developer') && (
                 <li className="list">
                   <a style={{ textDecoration: 'none', color: 'white' }} href='/view_employee'>Manage Users</a>
                 </li>
