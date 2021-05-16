@@ -264,14 +264,17 @@ class SignupPage extends React.Component {
         )}
         {(this.state.role === 'Employee' && this.state.loader === false) &&
         (
-          <p style={{position: 'absolute', left: '50%', top:'50%', transform: 'translate(-50%, -50%)', fontSize: '20px', fontWeight:'900'}}>Sorry you don't have access to this page</p>
+          <div>
+            <Navbar />
+            <p style={{position: 'absolute', left: '50%', top:'50%', transform: 'translate(-50%, -50%)', fontSize: '20px', fontWeight:'900'}}>Sorry you don't have access to this page</p>
+          </div>
         )}
         {((this.state.role === 'Management' || this.state.role === 'Developer') && this.state.loader === false) && (
           <div>
             <Navbar />
             <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
               <p style={{fontSize:"2.3rem",textAlign:"center"}}>Sri Renuga Trading Corporation</p>
-              <p style={{marginTop:"-35px", textAlign:"center"}}>Enter the user details</p>
+              <p style={{marginTop:"-35px", textAlign:"center"}}>Enter the sign up details</p>
             
               <Form style={{fontSize: '15px'}}>
               <Form.Field required error={this.state.nameError === 'Invalid'}>
