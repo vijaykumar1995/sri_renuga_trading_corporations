@@ -4,6 +4,9 @@ export default {
   user: {
     login: credentials =>
       axios.post("/api/employee/login", { data: credentials }).then(res =>  res.data.user),
+    get: () => axios.get('api/employee').then(res => res.data),
+    update: (data) => axios.put('/api/employee', { data: data }).then(res => res.data),
+    delete: (data) => axios.delete('/api/employee', { data: data }).then(res => res.data)
   },
   categories: {
     create: data => axios.post('/api/categories', { data: data }).then(res => res.data),

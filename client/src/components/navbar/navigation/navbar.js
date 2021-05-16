@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import * as actions from '../../../actions/auth';
@@ -43,9 +43,6 @@ class VerticalNavbar extends React.Component {
               name: response.data.details.name,
               email_id: response.data.details.email_id,
               role: response.data.details.role,
-              employee_id: response.data.details.employee_id,
-              manager_email: response.data.details.manager_email,
-              manager_name: response.data.details.manager_name,
               _id: response.data.details._id,
               updatedResponse: 'no'
             }
@@ -76,9 +73,12 @@ class VerticalNavbar extends React.Component {
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }}>Dashboard</a>
               </li>
-              <li className="list">
-                <a style={{ textDecoration: 'none', color: 'white' }} href='/signup'>Manage Users</a>
-              </li>
+              {this.state.details.role === 'Management' && (
+                <li className="list">
+                  <a style={{ textDecoration: 'none', color: 'white' }} href='/view_employee'>Manage Users</a>
+                </li>
+              )}
+             
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }} href='/categories'>Categories</a>
               </li>
