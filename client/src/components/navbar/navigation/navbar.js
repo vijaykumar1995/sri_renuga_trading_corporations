@@ -59,7 +59,7 @@ class VerticalNavbar extends React.Component {
   render() {
     const { slicedData, details } = this.state;
     const { isAuthenticated, logout } = this.props;
-    // console.log('details is ', details);
+    console.log('details is ', details.role);
     return (
       <div className="navbar" style={{marginBottom: '47px', overflow: 'hidden'}}>
         <nav>
