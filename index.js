@@ -39,7 +39,8 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-app.listen(port);
+const server = app.listen(port);
+server.timeout = 180000;
 //
 // eslint-disable-next-line no-console
 console.log(`App is listening on port ${port}`);
