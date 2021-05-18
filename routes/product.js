@@ -71,12 +71,13 @@ router.put('/', (req, res) => {
 
 router.post('/csv_upload', async(req, res) => {
   try {
+    let array = [];
     console.log(req.body.data);
     for(let i of req.body.data) {
       let category = await Category.findOne({ name: i.category })
       let weight = await Weight.findOne({ name: i.weight })
       if(category !== null && weight !== null) {
-        let product = await Product.create({
+        let value = {
           name: i.product_name,
           category: i.category,
           weight: i.weight,
@@ -86,9 +87,11 @@ router.post('/csv_upload', async(req, res) => {
           hsn_code: category.hsn_code,
           profit_percentage: i.profit_percentage,
           active: i.active
-        })
+        }
+        array.push(value);
       }
     }
+    let product = await Product.create(array);
     res.status(200).json('Successfully updated');
   } catch(e) {
     console.log(e)
