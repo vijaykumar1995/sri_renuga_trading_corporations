@@ -22,7 +22,6 @@ router.post('/', (req, res) => {
 
 router.get('/', (req, res) => {
   Weight.find().then((response) => {
-    console.log('inside the success');
     res.status(200).json(response);
   }).catch((err) => {
     res.status(400).json(err.data);

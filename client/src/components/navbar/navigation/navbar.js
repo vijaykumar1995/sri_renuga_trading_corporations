@@ -91,6 +91,9 @@ class VerticalNavbar extends React.Component {
               <li className="list">
                 <a style={{ textDecoration: 'none', color: 'white' }} href='/purchase_company'>Purchase Company</a>
               </li>
+              <li className="list">
+                <a style={{ textDecoration: 'none', color: 'white' }} href='/stock'>Stock</a>
+              </li>
             </div>
             <li className="dropdown" style={{ float: 'right' }}>
               <div>

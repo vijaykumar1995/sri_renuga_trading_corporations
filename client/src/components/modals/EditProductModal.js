@@ -9,13 +9,13 @@ class EditProductModal extends React.Component {
     super(props);
     this.state = {
       data: {
-        _id: props.product._id,
-        name: props.product.name,
-        gst_percentage: props.product.gst_percentage,
-        hsn_code: props.product.hsn_code,
-        availability: props.product.availability,
-        minimum_threshold: props.product.minimum_threshold,
-        profit_percentage: props.product.profit_percentage,
+        _id: '',
+        name: '',
+        gst_percentage: '',
+        hsn_code: '',
+        availability: '',
+        minimum_threshold: '',
+        profit_percentage: '',
         category: {
           display_value: '',
           actual_value: ''
@@ -24,15 +24,15 @@ class EditProductModal extends React.Component {
           display_value: '',
           actual_value: ''
         },
-        active: props.product.active
+        active: ''
       },
-      old_id: props.product._id,
-      old_name: props.product.name,
-      old_gst_percentage: props.product.gst_percentage,
-      old_hsn_code: props.product.hsn_code,
-      old_availability: props.product.availability,
-      old_minimum_threshold: props.product.minimum_threshold,
-      old_profit_percentage: props.product.profit_percentage,
+      old_id: '',
+      old_name: '',
+      old_gst_percentage: '',
+      old_hsn_code: '',
+      old_availability: '',
+      old_minimum_threshold: '',
+      old_profit_percentage: '',
       old_category: {
         display_value: '',
         actual_value: ''
@@ -41,7 +41,7 @@ class EditProductModal extends React.Component {
         display_value: '',
         actual_value: ''
       },
-      old_active: props.product.active,
+      old_active: '',
       categoriesList: [],
       weightList: [],
       success: '',
@@ -113,6 +113,32 @@ class EditProductModal extends React.Component {
         })
       })
     }
+  }
+
+  handleModalOpen = (e) => {
+      this.setState({
+        ...this.state,
+        data: {
+          ...this.state.data,
+          _id: this.props.product._id,
+          name: this.props.product.name,
+          gst_percentage: this.props.product.gst_percentage,
+          hsn_code: this.props.product.hsn_code,
+          availability: this.props.product.availability,
+          minimum_threshold: this.props.product.minimum_threshold,
+          profit_percentage: this.props.product.profit_percentage,
+          active: this.props.product.active
+        },
+        old_id: this.props.product._id,
+        old_name: this.props.product.name,
+        old_gst_percentage: this.props.product.gst_percentage,
+        old_hsn_code: this.props.product.hsn_code,
+        old_availability: this.props.product.availability,
+        old_minimum_threshold: this.props.product.minimum_threshold,
+        old_profit_percentage: this.props.product.profit_percentage,
+        old_active: this.props.product.active,
+        open: true
+      })
   }
 
   onChange = (e, name) => {
@@ -245,12 +271,7 @@ class EditProductModal extends React.Component {
           })
         }} 
         open={this.state.open} 
-        trigger={<Button positive onClick={(e) => {
-          this.setState({
-            ...this.state,
-            open: true
-          })
-        }}  circular size='medium' icon='edit' />}>
+        trigger={<Button positive onClick={(e) => { this.handleModalOpen(e) }}  circular size='medium' icon='edit' />}>
         <Modal.Header>
           Edit Product
         </Modal.Header>

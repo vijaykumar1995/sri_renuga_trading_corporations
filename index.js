@@ -9,6 +9,7 @@ import categories from './routes/categories';
 import employee from './routes/employee';
 import products from './routes/product';
 import purchaseCompany from './routes/purchase_company';
+import stock from './routes/stock';
 import weight from './routes/weight';
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use('/api/categories', categories);
 app.use('/api/employee', employee);
 app.use('/api/products', products);
 app.use('/api/purchase_company', purchaseCompany);
+app.use('/api/stock', stock);
 app.use('/api/weight', weight);
 
 app.get('*', (req, res) => {
@@ -39,7 +41,7 @@ app.get('*', (req, res) => {
 });
 
 const port = process.env.PORT || 5000;
-const server = app.listen(port);
+app.listen(port);
 //
 // eslint-disable-next-line no-console
 console.log(`App is listening on port ${port}`);

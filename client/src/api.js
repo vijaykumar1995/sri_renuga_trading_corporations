@@ -31,5 +31,9 @@ export default {
     get: () => axios.get('/api/purchase_company').then(res => res.data),
     update: (data) => axios.put('/api/purchase_company', {data: data}).then(res => res.data),
     delete: (data) => axios.delete('/api/purchase_company', {data: data}).then(res => res.data)
+  },
+  stock: {
+    get: () => axios.get('/api/stock').then(res => res.data),
+    create: (data) => axios.post('/api/stock', { data: data }).then(res => res.data)
   }
 };
