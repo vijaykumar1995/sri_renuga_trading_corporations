@@ -226,7 +226,7 @@ class CreateStockPage extends React.Component {
                 <CreateStockModal onClick={(data) => this.onClickHandle(data)} />
             </div>
           
-            <Button style={{position: 'relative', left: '50%', transform: 'translateX(-50%)'}} primary>Save</Button>
+            <Button style={{position: 'relative', left: '50%', transform: 'translateX(-50%)'}} primary onClick={(e) => this.onClickSave(e)}>Save</Button>
             <Table unstackable 
             structured 
             fixed 
