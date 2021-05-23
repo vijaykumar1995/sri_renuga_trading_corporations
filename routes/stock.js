@@ -48,7 +48,6 @@ router.get('/', async(req, res) => {
 })
 
 router.post('/', (req, res) => {
-  console.log(req.body.data)
   Invoice_Number.create({
     invoice_number: req.body.data.invoice_number,
     purchase_date: momentTimezone(req.body.data.purchase_date).utc().utcOffset('+05:30'),
@@ -57,7 +56,15 @@ router.post('/', (req, res) => {
     type: 'Purchase'
   }).then(response  => {
     var stockList = [];
+    
     for(let i of req.body.data.stockList) {
+      let expiryDate = momentTimezone(i.expiry_date).utc().utcOffset('+05:30')
+      let currentDate = momentTimezone(new Date()).utc().utcOffset('+05:30').format('YYYY-MM-DD');
+      currentDate = currentDate+ 'T00:00:00+05:30';
+      currentDate = momentTimezone(currentDate).utc().utcOffset('+05:30')
+      if(currentDate > expiryDate) {
+        i.active = false
+      }
       let stock = {
         invoice_number: response._id,
         type: i.type,
@@ -80,11 +87,38 @@ router.post('/', (req, res) => {
       stockList.push(stock);
     }
     Stock.create(stockList).then(stockResponse => {
-      console.log(stockResponse);
+      let productsMap = new Map();
+      for(let i of req.body.data.stockList) {
+        
+        if(i.active === true) { 
+          if(productsMap[i.product.actual_value] === undefined) {
+            productsMap[i.product.actual_value] =  parseInt(i.quantity)
+          } else {
+            var quantity;
+            quantity = productsMap[i.product.actual_value];
+            quantity += parseInt(i.quantity);
+            productsMap[i.product.actual_value] = quantity
+          }
+        }
+      }
+      
+      for(let i in productsMap) {
+        Product.findOne({_id: i}).then(product => {
+          var availability = product.availability;
+          availability = availability + productsMap[i];
+          Product.findOneAndUpdate({_id: i}, {availability: availability}).then(prodUpdate => {
+          }).catch(err => {
+            res.status(400).json('Error occured while updating the product')
+          })
+        })
+      }
+      res.status(200).json('Stock has been created successfully');
     }).catch(err => {
+      console.log('inside err ', err)
       res.status(400).json('Error occured while creating the stock')
     })
   }).catch(err => {
+    console.log(err)
     res.status(400).json('Error occured while creating the Invoice Number')
   })
 })
