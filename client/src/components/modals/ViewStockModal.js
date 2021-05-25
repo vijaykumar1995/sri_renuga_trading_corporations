@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Form, Modal, TextArea } from 'semantic-ui-react';
+import momentTimeZone from 'moment-timezone';
 
 class ViewStockModal extends React.Component {
 
@@ -34,39 +35,78 @@ class ViewStockModal extends React.Component {
   }
 
   handleModalOpen = (e) => {
-    let status = ''
-    if(this.props.stock.active) {
-      status = 'Active'
-    } else {
-      status = 'Inactive'
+    console.log(this.props.from)
+    if(this.props.from === 'create') {
+      let status = ''
+      if(this.props.stock.active) {
+        status = 'Active'
+      } else {
+        status = 'Inactive'
+      }
+      this.setState({
+        ...this.state,
+        data: {
+          ...this.state.data,
+          invoice_number: this.props.stock.invoice_number,
+          type: this.props.stock.type,
+          reason_for_return: this.props.stock.reason_for_return,
+          purchase_date: this.props.stock.purchase_date,
+          product: this.props.stock.product.display_value2,
+          quantity: this.props.stock.quantity,
+          company_name: this.props.stock.company_name,
+          gst_Number: this.props.stock.gst_Number,
+          gst_percentage: this.props.stock.gst_percentage,
+          hsn_code: this.props.stock.hsn_code,
+          unit_price: this.props.stock.unit_price,
+          cgst_cost: this.props.stock.cgst_cost,
+          sgst_cost: this.props.stock.sgst_cost,
+          batch_number: this.props.stock.batch_number,
+          expiry_date: this.props.stock.expiry_date,
+          available_quantity: this.props.stock.available_quantity,
+          active: status,
+          weight: this.props.stock.weight,
+          category: this.props.stock.category,
+          _id: this.props.stock._id
+        },
+        open: true
+      })
     }
-    this.setState({
-      ...this.state,
-      data: {
-        ...this.state.data,
-        invoice_number: this.props.stock.invoice_number,
-        type: this.props.stock.type,
-        reason_for_return: this.props.stock.reason_for_return,
-        purchase_date: this.props.stock.purchase_date,
-        product: this.props.stock.product.display_value2,
-        quantity: this.props.stock.quantity,
-        company_name: this.props.stock.company_name,
-        gst_Number: this.props.stock.gst_Number,
-        gst_percentage: this.props.stock.gst_percentage,
-        hsn_code: this.props.stock.hsn_code,
-        unit_price: this.props.stock.unit_price,
-        cgst_cost: this.props.stock.cgst_cost,
-        sgst_cost: this.props.stock.sgst_cost,
-        batch_number: this.props.stock.batch_number,
-        expiry_date: this.props.stock.expiry_date,
-        available_quantity: this.props.stock.available_quantity,
-        active: status,
-        weight: this.props.stock.weight,
-        category: this.props.stock.category,
-        _id: this.props.stock._id
-      },
-      open: true
-    })
+
+    if(this.props.from === 'view') {
+      let status = ''
+      if(this.props.stock.active) {
+        status = 'Active'
+      } else {
+        status = 'Inactive'
+      }
+      this.setState({
+        ...this.state,
+        data: {
+          ...this.state.data,
+          invoice_number: this.props.stock.invoice_number,
+          type: this.props.stock.type,
+          reason_for_return: this.props.stock.reason_for_return,
+          purchase_date: this.props.stock.purchase_date,
+          product: this.props.stock.product,
+          quantity: this.props.stock.quantity,
+          company_name: this.props.stock.company_name,
+          gst_Number: this.props.stock.gst_Number,
+          gst_percentage: this.props.stock.gst_percentage,
+          hsn_code: this.props.stock.hsn_code,
+          unit_price: this.props.stock.unit_price,
+          cgst_cost: this.props.stock.cgst_cost,
+          sgst_cost: this.props.stock.sgst_cost,
+          batch_number: this.props.stock.batch_number,
+          expiry_date: momentTimeZone(this.props.stock.expiry_date).utc().utcOffset('+05:30').format('DD-MM-YYYY'),
+          available_quantity: this.props.stock.available_quantity,
+          active: status,
+          weight: this.props.stock.weight,
+          category: this.props.stock.category,
+          _id: this.props.stock._id
+        },
+        open: true
+      })
+    }
   }
 
   onChange = (e, name) => {

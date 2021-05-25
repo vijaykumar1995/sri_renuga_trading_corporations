@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Divider, Dropdown, Form, Message, Table } from 'semantic-ui-react';
+import { Button, Divider, Dropdown, Form, Icon, Message, Modal, Table } from 'semantic-ui-react';
 import api from '../../api';
 import CreateStockModal from '../modals/CreateStockModal';
 import DeleteStockModal from '../modals/DeleteStockModal';
@@ -23,7 +23,8 @@ class CreateStockPage extends React.Component {
         gst_Number: '',
         stockList: [],
       },
-      
+      success: '',
+      _id: ''
     }
   }
 
@@ -129,6 +130,14 @@ class CreateStockPage extends React.Component {
   onClickSave = (e) => {
     e.preventDefault();
     api.stock.create(this.state.data).then(res => {
+      console.log(res._id);
+      this.setState({
+        ...this.state,
+        success: true,
+        _id: res._id
+      });
+      
+    }).catch(err => {
 
     })
   }
@@ -226,7 +235,7 @@ class CreateStockPage extends React.Component {
                 <CreateStockModal onClick={(data) => this.onClickHandle(data)} />
             </div>
           
-            <Button style={{position: 'relative', left: '50%', transform: 'translateX(-50%)'}} primary onClick={(e) => this.onClickSave(e)}>Save</Button>
+            <Button onClick={(e) => this.onClickSave(e)} style={{position: 'relative', left: '50%', transform: 'translateX(-50%)'}} primary>Save</Button>
             <Table unstackable 
             structured 
             fixed 
@@ -315,7 +324,7 @@ class CreateStockPage extends React.Component {
                   {stock.sgst_cost}
                 </Table.Cell>
                 <Table.Cell width='2'>
-                  <ViewStockModal stock={stock} />
+                  <ViewStockModal stock={stock} from='create' />
                   <DeleteStockModal stock={index} onClick={(key) => this.onClickDeleteHandle(key)} />
                   <EditStockModal 
                     stock={stock}
@@ -335,6 +344,24 @@ class CreateStockPage extends React.Component {
            primary
            onClick={(e) => this.onClickSave(e)}
           >Save</Button>
+
+          {this.state.success === true && (
+            <Modal open={true}>
+              <Modal.Content>
+                <center>
+                    <Icon name='check circle outline' size='huge' color='green' />
+                    
+                    <h2>Success Message!</h2>
+                    <p style={{fontSize: '20px'}}>Stock Created Successfully</p>
+                    
+                    <Button color='green' onClick={(e) => {
+                      e.preventDefault();
+                      window.location.assign(`/view_stock/${this.state._id}`)
+                    }}>OK</Button>
+                </center>
+              </Modal.Content>
+            </Modal>
+           )}
       </div>
         
     )

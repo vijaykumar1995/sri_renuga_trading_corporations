@@ -34,6 +34,7 @@ export default {
   },
   stock: {
     get: () => axios.get('/api/stock').then(res => res.data),
-    create: (data) => axios.post('/api/stock', { data: data }).then(res => res.data)
+    create: (data) => axios.post('/api/stock', { data: data }).then(res => res.data),
+    fetch: (data) => axios.get('/api/stock/fetch_single', { params: {_id: data} }).then(res => res.data)
   }
 };

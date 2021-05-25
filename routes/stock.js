@@ -7,6 +7,7 @@ import moment from 'moment';
 import momentTimezone from 'moment-timezone';
 import Invoice_Number from '../model/Invoice_Number';
 import Stock from '../model/Stock';
+import Purchase_Company from '../model/Purchase_Company';
 
 const router = express.Router();
 router.use(authenticate);
@@ -112,7 +113,7 @@ router.post('/', (req, res) => {
           })
         })
       }
-      res.status(200).json('Stock has been created successfully');
+      res.status(200).json(response);
     }).catch(err => {
       console.log('inside err ', err)
       res.status(400).json('Error occured while creating the stock')
@@ -120,6 +121,62 @@ router.post('/', (req, res) => {
   }).catch(err => {
     console.log(err)
     res.status(400).json('Error occured while creating the Invoice Number')
+  })
+})
+
+router.get('/fetch_single', (req, res) => {
+  let invoiceDetail = {
+    _id: '',
+    invoice_number: '',
+    purchase_date: '',
+    company_name: '',
+    gst_Number: '',
+    type: '',
+    stockList: []
+  }
+  Stock.find({invoice_number: req.query._id}).then(stocks => {
+  Invoice_Number.findOne({_id: req.query._id}).then(invoiceNumber => {
+    Purchase_Company.findOne({_id: invoiceNumber.company_name}).then(purchaseCompany => {
+      invoiceDetail._id = invoiceNumber._id;
+      invoiceDetail.invoice_number = invoiceNumber.invoice_number;
+      invoiceDetail.purchase_date = invoiceNumber.purchase_date;
+      invoiceDetail.company_name = purchaseCompany.name;
+      invoiceDetail.gst_Number = invoiceNumber.gst_Number,
+      invoiceDetail.type = invoiceNumber.type
+      let productsList = [];
+        for(let i of stocks) {
+          productsList.push(i.product);
+        }
+        Product.find({ _id:  { $in: productsList} }).then(products => {
+          for(let i of stocks) {
+            for(let prod of products) {
+              if(i.product.toString() == prod._id.toString()) {
+                let stock = {
+                  type: i.type,
+                  reason_for_return: i.reason_for_return,
+                  purchase_date: i.purchase_date,
+                  quantity: i.quantity,
+                  product: prod.name,
+                  gst_percentage: i.gst_percentage,
+                  hsn_code: i.hsn_code,
+                  unit_price: i.unit_price,
+                  cgst_cost: i.cgst_cost,
+                  sgst_cost: i.sgst_cost,
+                  batch_number: i.batch_number,
+                  expiry_date: i.expiry_date,
+                  available_quantity: i.available_quantity,
+                  active: i.active,
+                  weight: i.weight,
+                  category: i.category,
+                }
+                invoiceDetail.stockList.push(stock);
+              }
+            }
+          }
+          res.status(200).json(invoiceDetail)
+        }).catch(err => {res.status(400).json('Error occured while fetching the Products')})
+      }).catch(err => { res.status(400).json('Error Occured while fetching the Invoice Number') })
+    }).catch(err => { res.status(400).json('Error Occured while fetching the Stock') })
   })
 })
 export default router;

@@ -9,6 +9,7 @@ import ProductPage from './components/pages/ProductPage';
 import PurchaseCompanyPage from './components/pages/PurchasecompanyPage';
 import SignupPage from '../src/components/pages/SignupPage';
 import StockPage from "./components/pages/StockPage";
+import ViewStockPage from './components/pages/ViewStockPage';
 import WeightPage from '../src/components/pages/WeightPage';
 
 import GuestRoute from './components/routes/GuestRoute';
@@ -25,6 +26,7 @@ function App({location}) {
     <UserRoute location = { location } path = "/purchase_company" exact component={PurchaseCompanyPage} />
     <UserRoute location = { location } path = "/signup" exact component={SignupPage} />
     <UserRoute location = { location } path = "/stock" exact component={StockPage} />
+    <UserRoute location = { location } path = "/view_stock/:id" exact component={ViewStockPage} />
     <UserRoute location = { location } path = "/weight" exact component={WeightPage} />
     </>
   );
