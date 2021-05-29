@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Divider, Dropdown, Form, Icon, Message, Modal, Table } from 'semantic-ui-react';
 import api from '../../api';
 import CreateStockModal from '../modals/CreateStockModal';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 import DeleteStockModal from '../modals/DeleteStockModal';
 import EditStockModal from '../modals/EditStockModal';
 import ViewStockModal from '../modals/ViewStockModal';
@@ -24,23 +25,41 @@ class CreateStockPage extends React.Component {
         stockList: [],
       },
       success: '',
-      _id: ''
+      _id: '',
+      open: ''
     }
   }
 
 
   componentDidMount = () => {
     api.purchase_company.get().then(purchaseCompanyList => {
-      let purchaseCompany = [];
-      for(let i of purchaseCompanyList) {
-        purchaseCompany.push({
-          text: i.name,
-          value: JSON.stringify(i)
-        })
-      }
-      this.setState({
-        ...this.state,
-        purchaseCompanyList: purchaseCompany
+      api.stock_maintainance.get().then(stockMaintainanceRes => {
+        let purchaseCompany = [];
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          for(let i of purchaseCompanyList) {
+            purchaseCompany.push({
+              text: i.name,
+              value: JSON.stringify(i)
+            })
+          }
+          this.setState({
+            ...this.state,
+            purchaseCompanyList: purchaseCompany,
+            open: true
+          })
+        } else {
+          for(let i of purchaseCompanyList) {
+            purchaseCompany.push({
+              text: i.name,
+              value: JSON.stringify(i)
+            })
+          }
+          this.setState({
+            ...this.state,
+            purchaseCompanyList: purchaseCompany,
+            open: false
+          })
+        }
       })
     })
   }
@@ -68,6 +87,25 @@ class CreateStockPage extends React.Component {
         }
       })
     }
+  }
+
+  generateRequest = (value) => {
+    api.purchase_company.get().then(purchaseCompanyList => {
+      api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => {
+        let purchaseCompany = []; 
+        for(let i of purchaseCompanyList) {
+          purchaseCompany.push({
+            text: i.name,
+            value: JSON.stringify(i)
+          })
+        }
+        this.setState({
+          ...this.state,
+          purchaseCompanyList: purchaseCompany,
+          open: false
+        })
+      })
+    })
   }
 
   onClickHandle = (response) => {
@@ -146,6 +184,7 @@ class CreateStockPage extends React.Component {
     return(
       <div>
         <Navbar/>
+        <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
         <div style={{position: 'relative', top: '10px'}}>
           <p 
             style={{

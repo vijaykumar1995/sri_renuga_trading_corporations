@@ -10,6 +10,8 @@ import axios from 'axios';
 import Navbar from '../navbar/navigation/navbar';
 import decode from 'jwt-decode';
 import emailValidator from 'email-validator';
+import api from '../../api';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 class SignupPage extends React.Component {
 
@@ -29,7 +31,8 @@ class SignupPage extends React.Component {
     success: '',
     message: '',
     role: '',
-    loader: true
+    loader: true,
+    open: ''
   }
 
   componentDidMount = () => {
@@ -40,11 +43,23 @@ class SignupPage extends React.Component {
         params: { ph_number: decodedData.ph_number }
       })
       .then((response) => {
-        console.log(response.data);
-        this.setState({
-          ...this.state,
-          role: response.data.details.role,
-          loader: false
+        api.stock_maintainance.get().then(stockMaintainanceRes => {
+          console.log(response.data);
+          if('Need to Update the Stock' === stockMaintainanceRes) {
+            this.setState({
+              ...this.state,
+              role: response.data.details.role,
+              loader: false,
+              open: true
+            })
+          } else {
+            this.setState({
+              ...this.state,
+              role: response.data.details.role,
+              loader: false,
+              open: false
+            })
+          }
         })
       })
   }
@@ -244,6 +259,26 @@ class SignupPage extends React.Component {
       }
     }
   }
+
+  generateRequest = (value) => {
+    var localStorageData = localStorage.SRTJWT;
+    var decodedData = decode(localStorageData);
+    axios
+      .get(`/api/employee/profile_details`, {
+        params: { ph_number: decodedData.ph_number }
+      })
+      .then((response) => {
+        api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => {
+          this.setState({
+            ...this.state,
+            role: response.data.details.role,
+            loader: false,
+            open: false
+          })
+        }) 
+      })
+  }
+
   render() {
     const  designation = [
       {
@@ -266,12 +301,14 @@ class SignupPage extends React.Component {
         (
           <div>
             <Navbar />
+            <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
             <p style={{position: 'absolute', left: '50%', top:'50%', transform: 'translate(-50%, -50%)', fontSize: '20px', fontWeight:'900'}}>Sorry you don't have access to this page</p>
           </div>
         )}
         {((this.state.role === 'Management' || this.state.role === 'Developer') && this.state.loader === false) && (
           <div>
             <Navbar />
+            <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
             <div style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}}>
               <p style={{fontSize:"2.3rem",textAlign:"center"}}>Sri Renuga Trading Corporation</p>
               <p style={{marginTop:"-35px", textAlign:"center"}}>Enter the sign up details</p>

@@ -4,6 +4,7 @@ import api from '../../api';
 import ViewStockModal from '../modals/ViewStockModal';
 import Navbar from '../navbar/navigation/navbar';
 import momentTimeZone from 'moment-timezone'
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 class CreateStockPage extends React.Component {
 
@@ -20,7 +21,8 @@ class CreateStockPage extends React.Component {
       },
       success: '',
       _id: '',
-      loader: true
+      loader: true,
+      open: ''
     }
   }
 
@@ -29,18 +31,60 @@ class CreateStockPage extends React.Component {
     var params = this.props.match.params.id;
     console.log(params);
     api.stock.fetch(params).then(response => {
-      this.setState({
-        ...this.state,
-        data: {
-          ...this.state.data,
-          purchase_date: response.purchase_date,
-          invoice_number: response.invoice_number,
-          company_name: response.company_name,
-          gst_Number: response.gst_Number,
-          stockList: response.stockList
-        },
-        loader: false
+      api.stock_maintainance.get().then(stockMaintainanceRes => {
+        
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          this.setState({
+            ...this.state,
+            data: {
+              ...this.state.data,
+              purchase_date: response.purchase_date,
+              invoice_number: response.invoice_number,
+              company_name: response.company_name,
+              gst_Number: response.gst_Number,
+              stockList: response.stockList
+            },
+            loader: false,
+            open: true
+          })
+        } else {
+          this.setState({
+            ...this.state,
+            data: {
+              ...this.state.data,
+              purchase_date: response.purchase_date,
+              invoice_number: response.invoice_number,
+              company_name: response.company_name,
+              gst_Number: response.gst_Number,
+              stockList: response.stockList
+            },
+            loader: false,
+            open: false
+          })
+        }
       })
+    })
+  }
+
+  generateRequest = (value) => {
+    var params = this.props.match.params.id;
+    console.log(params);
+    api.stock.fetch(params).then(response => {
+      api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => { 
+        this.setState({
+          ...this.state,
+          data: {
+            ...this.state.data,
+            purchase_date: response.purchase_date,
+            invoice_number: response.invoice_number,
+            company_name: response.company_name,
+            gst_Number: response.gst_Number,
+            stockList: response.stockList
+          },
+          loader: false,
+          open: false
+        })
+      }) 
     })
   }
 
@@ -54,6 +98,7 @@ class CreateStockPage extends React.Component {
       return(
         <div>
           <Navbar/>
+          <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
           <div style={{position: 'relative', top: '10px'}}>
             <p 
               style={{

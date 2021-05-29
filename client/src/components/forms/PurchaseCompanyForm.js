@@ -2,6 +2,7 @@ import React from 'react';
 import { Table, Loader } from 'semantic-ui-react';
 import api from '../../api';
 import CreatePurchaseCompanyModal from '../modals/CreatePurchaseCompanyModal';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 import DeletePurchasecompanyModal from '../modals/DeletePurchaseCompanyModal';
 import EditPurchaseCompanyModal from '../modals/EditPurchaseCompanyModal';
 import ImportCSVModal from '../modals/ImportCSVModal';
@@ -9,14 +10,42 @@ import ImportCSVModal from '../modals/ImportCSVModal';
 class PurchaseCompanyForm extends React.Component {
   state = {
     purchaseCompanyList: [],
-    loader: true
+    loader: true,
+    open: ''
   }
   componentDidMount= () => {
     api.purchase_company.get().then((res) => {
-      this.setState({
-        ...this.state,
-        purchaseCompanyList: res,
-        loader: false
+      api.stock_maintainance.get().then(stockMaintainanceRes => {
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          this.setState({
+            ...this.state,
+            purchaseCompanyList: res,
+            loader: false,
+            open: true
+          })
+        } else {
+          this.setState({
+            ...this.state,
+            purchaseCompanyList: res,
+            loader: false,
+            open: false
+          })
+        }
+        
+      })
+    })
+  }
+
+  generateRequest = (value) => {
+    api.purchase_company.get().then((res) => {
+      api.stock_maintainance.updateStockDetails.then(stockMaintainanceRes => {
+          this.setState({
+            ...this.state,
+            purchaseCompanyList: res,
+            loader: false,
+            open: false
+          })
+        
       })
     })
   }
@@ -59,6 +88,7 @@ class PurchaseCompanyForm extends React.Component {
                   left: '50%',
                   transform: 'translateX(-50%)'
                 }}>
+             <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
             <Table.Header>
               <Table.Row> 
                 <Table.HeaderCell width='7'>Company Name</Table.HeaderCell>

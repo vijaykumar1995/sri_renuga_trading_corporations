@@ -6,6 +6,7 @@ import EditProductModal from '../modals/EditProductModal';
 import DeleteProductModal from '../modals/DeleteProductModal';
 import ImportCSVModal from '../modals/ImportCSVModal';
 import axios from 'axios';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 
 class Products extends React.Component {
@@ -16,35 +17,69 @@ class Products extends React.Component {
     loader: true,
     productsOptions: [],
     productSearch: '',
-    message: ''
+    message: '',
+    open: ''
   }
   componentDidMount = () => {
     api.product.get().then((productRes) => {
-      let products = [];
-      for(let i of productRes) {
-        products.push({
-          text: i.name,
-          value: i.name
-        })
-      }
-      
-      let uniqueProductArray = [];
-      for(let i of products) {
-        let flag=0;
-        for(let j of uniqueProductArray) {
-          if(j.text === i.text) {
-            flag = 1;
+      api.stock_maintainance.get().then(stockMaintainanceRes => {
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          let products = [];
+          for(let i of productRes) {
+            products.push({
+              text: i.name,
+              value: i.name
+            })
           }
+          
+          let uniqueProductArray = [];
+          for(let i of products) {
+            let flag=0;
+            for(let j of uniqueProductArray) {
+              if(j.text === i.text) {
+                flag = 1;
+              }
+            }
+            if(flag === 0) {
+              uniqueProductArray.push(i);
+            }
+          }
+          this.setState({
+            ...this.state,
+            productsList: productRes,
+            loader: false,
+            productsOptions: uniqueProductArray,
+            open: true
+          })
+        } else {
+          let products = [];
+          for(let i of productRes) {
+            products.push({
+              text: i.name,
+              value: i.name
+            })
+          }
+          
+          let uniqueProductArray = [];
+          for(let i of products) {
+            let flag=0;
+            for(let j of uniqueProductArray) {
+              if(j.text === i.text) {
+                flag = 1;
+              }
+            }
+            if(flag === 0) {
+              uniqueProductArray.push(i);
+            }
+          }
+          this.setState({
+            ...this.state,
+            productsList: productRes,
+            loader: false,
+            productsOptions: uniqueProductArray,
+            open: false
+          })
         }
-        if(flag === 0) {
-          uniqueProductArray.push(i);
-        }
-      }
-      this.setState({
-        ...this.state,
-        productsList: productRes,
-        loader: false,
-        productsOptions: uniqueProductArray
       })
     });
     
@@ -148,6 +183,40 @@ class Products extends React.Component {
     })
   }
 
+  generateRequest = (value) => {
+    api.product.get().then((productRes) => {
+      api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => {
+        let products = [];
+        for(let i of productRes) {
+          products.push({
+            text: i.name,
+            value: i.name
+          })
+        }
+        
+        let uniqueProductArray = [];
+        for(let i of products) {
+          let flag=0;
+          for(let j of uniqueProductArray) {
+            if(j.text === i.text) {
+              flag = 1;
+            }
+          }
+          if(flag === 0) {
+            uniqueProductArray.push(i);
+          }
+        }
+        this.setState({
+          ...this.state,
+          productsList: productRes,
+          loader: false,
+          productsOptions: uniqueProductArray,
+          open: false
+        })
+      })
+    })
+  }
+
   render() {
     return(
       <div>
@@ -163,6 +232,7 @@ class Products extends React.Component {
                 transform: 'translateX(-50%)'
               }}>Products</p>
             <CreateProductModal categoriesList={this.state.categoriesList} weightList={this.state.weightList} />
+            <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
           </div>
           {this.state.loader === true && (
             <Loader active inline='centered' style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}} />

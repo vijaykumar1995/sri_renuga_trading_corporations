@@ -4,21 +4,50 @@ import api from '../../api';
 import CreateWeightModal from '../modals/CreateWeightModal';
 import EditWeightModal from '../modals/EditWeightModal';
 import DeleteWeightModal from '../modals/DeleteWeightModal';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 class WeightForm extends React.Component {
   state = {
     weightList: [],
     prevWeightList: [],
-    loader: true
+    loader: true,
+    open: ''
   }
   componentDidMount= () => {
     api.weight.get().then((res) => {
-      this.setState({
-        ...this.state,
-        weightList: res,
-        prevWeightList: res,
-        loader: false
+      api.stock_maintainance.get().then(stockMaintainanceRes => { 
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          this.setState({
+            ...this.state,
+            weightList: res,
+            prevWeightList: res,
+            loader: false,
+            open: true
+          })
+        } else {
+          this.setState({
+            ...this.state,
+            weightList: res,
+            prevWeightList: res,
+            loader: false,
+            open: false
+          })
+        }
       })
+    })
+  }
+
+  generateRequest = (value) => {
+    api.weight.get().then((res) => {
+      api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => { 
+        this.setState({
+          ...this.state,
+          weightList: res,
+          prevWeightList: res,
+          loader: false,
+          open: false
+        })
+      }) 
     })
   }
 
@@ -55,6 +84,7 @@ class WeightForm extends React.Component {
                   left: '50%',
                   transform: 'translateX(-50%)'
                 }}>
+            <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
             <Table.Header>
               <Table.Row> 
                 <Table.HeaderCell width='14'>Weight</Table.HeaderCell>

@@ -36,5 +36,9 @@ export default {
     get: () => axios.get('/api/stock').then(res => res.data),
     create: (data) => axios.post('/api/stock', { data: data }).then(res => res.data),
     fetch: (data) => axios.get('/api/stock/fetch_single', { params: {_id: data} }).then(res => res.data)
+  },
+  stock_maintainance: {
+    get: () => axios.get('/api/stock_maintainance').then(res => res.data),
+    updateStockDetails: () => axios.get('/api/stock_maintainance/update_stock').then(res => res.data)
   }
 };

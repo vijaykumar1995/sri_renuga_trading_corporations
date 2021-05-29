@@ -4,13 +4,16 @@ import Navbar from '../navbar/navigation/navbar';
 import decode from 'jwt-decode';
 import axios from 'axios';
 import { Loader } from 'semantic-ui-react';
+import api from '../../api';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 class EmployeeFetchPage extends React.Component {
   state = {
     response: '',
     error: '',
     role: '',
-    loader: true
+    loader: true,
+    open: ''
   }
 
   componentDidMount = () => {
@@ -21,12 +24,45 @@ class EmployeeFetchPage extends React.Component {
         params: { ph_number: decodedData.ph_number }
       })
       .then((response) => {
-        console.log(response.data);
-        this.setState({
-          ...this.state,
-          role: response.data.details.role,
-          loader: false
+        api.stock_maintainance.get().then(stockMaintainanceRes => {
+          if('Need to Update the Stock' === stockMaintainanceRes) {
+            console.log(response.data);
+            this.setState({
+              ...this.state,
+              role: response.data.details.role,
+              loader: false,
+              open: true
+            })
+          } else {
+            console.log(response.data);
+            this.setState({
+              ...this.state,
+              role: response.data.details.role,
+              loader: false,
+              open: false
+            })
+          }
         })
+      })
+  }
+
+  generateRequest = (value) => {
+    var localStorageData = localStorage.SRTJWT;
+    var decodedData = decode(localStorageData);
+    axios
+      .get(`/api/employee/profile_details`, {
+        params: { ph_number: decodedData.ph_number }
+      })
+      .then((response) => {
+        api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => { 
+          console.log(response.data);
+          this.setState({
+            ...this.state,
+            role: response.data.details.role,
+            loader: false,
+            open: false
+          })
+        }) 
       })
   }
 
@@ -35,6 +71,7 @@ class EmployeeFetchPage extends React.Component {
     return(
       <div>
         <Navbar />
+        <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}}/>
         { this.state.loader === true && (
           <Loader active inline='centered' style={{position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)'}} />
         )

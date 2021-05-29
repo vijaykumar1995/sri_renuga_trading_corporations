@@ -4,20 +4,53 @@ import api from '../../api';
 import CreateCategoriesModal from '../modals/CreateCategoriesModal';
 import EditCategoriesModal from '../modals/EditCategoriesModal';
 import DeleteCategoriesModal from '../modals/DeleteCategoriesModal';
+import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
 
 class Categories extends React.Component {
   state = {
     categoriesList: [],
     prevCategoriesList: [],
-    loader: true
+    loader: true,
+    open: true
   }
   componentDidMount= () => {
     api.categories.get().then((res) => {
-      this.setState({
-        ...this.state,
-        categoriesList: res,
-        prevCategoriesList: res,
-        loader: false
+      api.stock_maintainance.get().then(stockMaintainanceRes => {
+        if('Need to Update the Stock' === stockMaintainanceRes) {
+          this.setState({
+            ...this.state,
+            categoriesList: res,
+            prevCategoriesList: res,
+            loader: false,
+            open: true
+          })
+        } else {
+          this.setState({
+            ...this.state,
+            categoriesList: res,
+            prevCategoriesList: res,
+            loader: false,
+            open: false
+          })
+        }
+      }).catch(err => {
+        console.log(err)
+      })
+    }).catch(err => {
+      console.log(err)
+    })
+  }
+
+  generateRequest = (value) => {
+    api.categories.get().then((res) => { 
+      api.stock_maintainance.updateStockDetails().then(stockMaintainanceRes => {
+        this.setState({
+          ...this.state,
+          categoriesList: res,
+          prevCategoriesList: res,
+          loader: false,
+          open: false
+        })
       })
     })
   }
@@ -55,6 +88,7 @@ class Categories extends React.Component {
                   left: '50%',
                   transform: 'translateX(-50%)'
                 }}>
+            <DailyStockExpiryUpdateModal open={this.state.open} onClick={(value) => {this.generateRequest(value)}} />
             <Table.Header>
               <Table.Row> 
                 <Table.HeaderCell width='6'>Category Name</Table.HeaderCell>
