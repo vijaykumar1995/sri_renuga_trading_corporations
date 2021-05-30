@@ -51,7 +51,8 @@ class ImportCSVModal extends React.Component {
 						delete obj[key];
 					}
 				}
-        axios.post('/api/products/csv_upload', { data: lines })
+			}
+      axios.post('/api/products/csv_upload', { data: lines })
         .then(response => {
           window.location.reload()
         }).catch(err => {
@@ -61,7 +62,6 @@ class ImportCSVModal extends React.Component {
             success: false
           })
         })
-			}
     } else if(e.meta.fields.length > 0 && this.state.name === 'purchase company') {
       var lines = e.data;
       console.log(lines);
@@ -77,7 +77,8 @@ class ImportCSVModal extends React.Component {
 						delete obj[key];
 					}
 				}
-        axios.post('/api/purchase_company/csv_upload', { data: lines })
+			}
+      axios.post('/api/purchase_company/csv_upload', { data: lines })
         .then(response => {
           window.location.reload()
         }).catch(err => {
@@ -87,7 +88,6 @@ class ImportCSVModal extends React.Component {
             success: false
           })
         })
-			}
     }
   }
 
