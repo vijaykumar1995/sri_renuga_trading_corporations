@@ -107,7 +107,7 @@ router.get('/', async(req, res) => {
 router.post('/', (req, res) => {
   Invoice_Number.create({
     invoice_number: req.body.data.invoice_number,
-    purchase_date: momentTimezone(req.body.data.purchase_date).utc().utcOffset('+05:30'),
+    purchase_date: momentTimezone(req.body.data.purchase_date+ 'T00:00:00+05:30').utc().utcOffset('+05:30'),
     company_name: req.body.data.company_name.actual_value,
     gst_Number: req.body.data.gst_Number,
     type: 'Purchase'
@@ -126,7 +126,7 @@ router.post('/', (req, res) => {
         invoice_number: response._id,
         type: i.type,
         reason_for_return: i.reason_for_return,
-        purchase_date: momentTimezone(req.body.data.purchase_date).utc().utcOffset('+05:30'),
+        purchase_date: momentTimezone(req.body.data.purchase_date+'T00:00:00+05:30').utc().utcOffset('+05:30'),
         product: i.product.actual_value,
         quantity: i.quantity,
         gst_percentage: i.gst_percentage,
