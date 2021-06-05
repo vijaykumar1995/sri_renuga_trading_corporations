@@ -3,20 +3,23 @@ import { Button, Form, Label, Loader, Segment, Table } from 'semantic-ui-react';
 import api from '../../api';
 import Navbar from '../navbar/navigation/navbar';
 import moment from 'moment-timezone';
-import ViewStockModal from '../modals/ViewStockModal';
 import DailyStockExpiryUpdateModal from '../modals/DailyStockExpiryUpdateModal';
+import axios from 'axios';
 
 class StockPage extends React.Component {
   state = {
     stockList: [],
     loader: true,
-    open: false
+    open: false,
+    purchase_start_date: '',
+    purchase_end_date: '',
+    invoice_number: '',
+    product_name: ''
   }
 
   componentDidMount = () => {
     api.stock.get().then((res) => {
       api.stock_maintainance.get().then(stockMaintainanceRes => {
-        console.log(stockMaintainanceRes);
         if('Need to Update the Stock' === stockMaintainanceRes) {
           this.setState({
             ...this.state,
@@ -58,6 +61,97 @@ class StockPage extends React.Component {
     })
   }
 
+  onClickSubmit = (e, variable_name) => {
+    e.preventDefault();
+    if(variable_name === 'purchase date') {
+      if(this.state.purchase_start_date !== '' && this.state.purchase_end_date !== '') {
+        var data = {
+          name: 'purchase date',
+          purchase_start_date: this.state.purchase_start_date,
+          purchase_end_date: this.state.purchase_end_date
+        }
+        axios.get('/api/stock', {params: {data: data}}).then(response => {
+          this.setState({
+            ...this.state,
+            stockList: response.data
+          })
+        })
+      }
+    } else if(variable_name === 'invoice number') {
+      console.log('in invoice number', this.state.invoice_number);
+      if(this.state.invoice_number !== '') {
+        var data = {
+          name: 'invoice number',
+          invoice_number: this.state.invoice_number
+        }
+        axios.get('/api/stock', { params: { data: data } }).then(response => {
+          this.setState({
+            ...this.state,
+            stockList: response.data
+          })
+        })
+      }
+    } else if(variable_name === 'product name') {
+      console.log('in invoice number', this.state.product_name);
+      if(this.state.product_name !== '') {
+        var data = {
+          name: 'product name',
+          product_name: this.state.product_name
+        }
+        axios.get('/api/stock', { params: { data: data } }).then(response => {
+          this.setState({
+            ...this.state,
+            stockList: response.data
+          })
+        })
+      }
+    }
+  }
+  
+  onChangePurchaseDate = (e, variable_name) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      [variable_name]: e.target.value
+    })
+  }
+
+  onClickCancel = (e, variable_name) => {
+    e.preventDefault();
+    if(variable_name === 'purchase date') {
+      this.setState({
+        ...this.state,
+        purchase_start_date: '',
+        purchase_end_date: ''
+      })
+    } else if(variable_name === 'invoice number') {
+      console.log('inside the cancel of invoice')
+      this.setState({
+        ...this.state,
+        invoice_number: ''
+      })
+    } else if(variable_name === 'product name') {
+      this.setState({
+        ...this.state,
+        product_name: ''
+      })
+    }
+    api.stock.get().then((res) => {
+      this.setState({
+        ...this.state,
+        stockList: res
+      })
+    })
+  }
+
+  onChange = (e, variable_name) => {
+    e.preventDefault();
+    this.setState({
+      ...this.state,
+      [variable_name]: e.target.value
+    })
+  }
+
   render() {
     if(this.state.loader === false) {
       return(
@@ -94,19 +188,19 @@ class StockPage extends React.Component {
                 <Form.Group>
                 <Form.Field>
                 <label>Purchase Start Date</label>
-                <input style={{width:'90%'}} type='date' />
+                <input style={{width:'90%'}} type='date' onChange={(e) => {this.onChangePurchaseDate(e, 'purchase_start_date')}} value={this.state.purchase_start_date} />
               </Form.Field>
               <Form.Field>
                 <label>Purchase End Date</label>
-                <input style={{width:'90%'}} type='date' />
+                <input style={{width:'90%'}} type='date' value={this.state.purchase_end_date} onChange={(e) => {this.onChangePurchaseDate(e, 'purchase_end_date')}} />
               </Form.Field>
               <Form.Field style={{position: 'relative', right: '3%'}}>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button primary onClick={(e) => this.onClickSubmit(e)}>Search</Button>
+                <Button primary onClick={(e) => this.onClickSubmit(e, 'purchase date')}>Search</Button>
               </Form.Field>
               <Form.Field style={{position: 'relative', right: '3%'}}>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button onClick={(e) => { this.onClickCancel(e) }}>Clear</Button>
+                <Button onClick={(e) => { this.onClickCancel(e, 'purchase date') }}>Clear</Button>
               </Form.Field>
                 </Form.Group>
               
@@ -115,16 +209,16 @@ class StockPage extends React.Component {
                 <Form.Group>
                 <Form.Field>
                 <label>Invoice Number</label>
-                <input type='text' placeholder='Enter the Invoice number' />
+                <input type='text' value={this.state.invoice_number} placeholder='Enter the Invoice number' onChange={(e) => {this.onChange(e, 'invoice_number')}} />
               </Form.Field>
               <Form.Field>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button primary onClick={(e) => this.onClickSubmit(e)}>Search</Button>
+                <Button primary onClick={(e) => this.onClickSubmit(e, 'invoice number')}>Search</Button>
               </Form.Field>
               
               <Form.Field>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button onClick={(e) => { this.onClickCancel(e) }}>Clear</Button>
+                <Button onClick={(e) => { this.onClickCancel(e, 'invoice number') }}>Clear</Button>
               </Form.Field>
                 </Form.Group>
               </Segment>
@@ -132,15 +226,15 @@ class StockPage extends React.Component {
               <Form.Group>
               <Form.Field>
                 <label>Product Name</label>
-                <input type='text' placeholder='Enter the Product Name' />
+                <input type='text' placeholder='Enter the Product Name' value={this.state.product_name} onChange={(e) => {this.onChange(e, 'product_name')}} />
               </Form.Field>
               <Form.Field>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button primary onClick={(e) => this.onClickSubmit(e)}>Search</Button>
+                <Button primary onClick={(e) => this.onClickSubmit(e, 'product name')}>Search</Button>
               </Form.Field>
               <Form.Field>
                 <label style={{visibility: 'hidden'}}>Msg</label>
-                <Button onClick={(e) => { this.onClickCancel(e) }}>Clear</Button>
+                <Button onClick={(e) => { this.onClickCancel(e, 'product name') }}>Clear</Button>
               </Form.Field>
           </Form.Group>
               </Segment>
@@ -171,9 +265,6 @@ class StockPage extends React.Component {
                   Purchase date
                 </Table.HeaderCell>
                 <Table.HeaderCell>
-                  Product
-                </Table.HeaderCell>
-                <Table.HeaderCell>
                   Company Name
                 </Table.HeaderCell>
                 <Table.HeaderCell>
@@ -181,12 +272,6 @@ class StockPage extends React.Component {
                 </Table.HeaderCell>
                 <Table.HeaderCell>
                   Quantity Available
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  Expiry Date
-                </Table.HeaderCell>
-                <Table.HeaderCell>
-                  Status
                 </Table.HeaderCell>
                 <Table.HeaderCell>
                   Actions
@@ -201,17 +286,18 @@ class StockPage extends React.Component {
                 {stock.invoice_number}
               </Table.Cell>
               <Table.Cell>
-                {stock.type === 'purchased' ? (
+                {stock.type === 'purchased' && (
                   <Label color='blue'>Purchased</Label>
-                ) : (
-                  <Label color='green'>Return</Label>
+                )}  
+                {stock.type === 'partially_returned' &&(
+                  <Label color='green'>Partially Returned</Label>
+                )}
+                {stock.type === 'returned' &&(
+                  <Label color='grey'>Returned</Label>
                 )}
               </Table.Cell>
               <Table.Cell>
                 {moment(stock.purchase_date).utcOffset('+05:30').format('DD/MM/YYYY')}
-              </Table.Cell>
-              <Table.Cell>
-                {stock.product}
               </Table.Cell>
               <Table.Cell>
                 {stock.company_name}
@@ -223,18 +309,11 @@ class StockPage extends React.Component {
                 {stock.available_quantity}
               </Table.Cell>
               <Table.Cell>
-                {moment(stock.expiry_date).utcOffset('+05:30').format('DD/MM/YYYY')}
-              </Table.Cell>
-              <Table.Cell>
-                {stock.active === true ? (
-                  <Label color='orange'>Active</Label>
-                ) : (
-                  <Label>Inactive</Label>
-                )}
-              </Table.Cell>
-              <Table.Cell>
-                <ViewStockModal stock={stock} />
-              {/* <Button circular size='medium' icon='eye' /> */}
+                {/* <ViewStockModal stock={stock} /> */}
+              <Button circular size='medium' icon='eye' onClick={(e) => {
+                e.preventDefault();
+                window.location.assign(`/view_stock/${stock.id}`)
+              }} />
               </Table.Cell>
             </Table.Row>
             ))}

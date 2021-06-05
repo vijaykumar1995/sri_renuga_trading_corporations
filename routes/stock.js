@@ -14,35 +14,91 @@ router.use(authenticate);
 
 router.get('/', async(req, res) => {
   try {
-    let stockList = [];
-    let response = await Stock.find()
-    for(let i of response) {
-      let product = await Product.findOne({ _id: i.product })
-      var data = {
-        invoice_number: i.invoice_number,
-        type: i.type,
-        reason_for_return: i.reason_for_return,
-        purchase_date: i.purchase_date,
-        product: product.name,
-        quantity: i.quantity,
-        company_name: i.company_name,
-        gst_Number: i.gst_Number,
-        gst_percentage: i.gst_percentage,
-        hsn_code: i.hsn_code,
-        unit_price: i.unit_price,
-        cgst_cost: i.cgst_cost,
-        sgst_cost: i.sgst_cost,
-        batch_number: i.batch_number,
-        expiry_date: i.expiry_date,
-        available_quantity: i.available_quantity,
-        active: i.active,
-        weight: i.weight,
-        category: i.category,
-      }
-      stockList.push(data);
+    let invoiceList = [];
+    let jsonResponse = [];
+    let jsonParse = {}
+    if(req.query.data !== undefined) {
+      jsonParse = JSON.parse(req.query.data);
     }
-    res.status(200).json(stockList);
+    if(req.query.data === undefined) {
+      invoiceList = await Invoice_Number.find();
+    } else if(jsonParse.name === 'purchase date') {
+      var purchase_start_date = momentTimezone(jsonParse.purchase_start_date+'T00:00:00+05:30').utc().format('YYYY-MM-DDTHH:mm:ssZ');
+      var purchase_end_date = momentTimezone(jsonParse.purchase_end_date+'T00:00:00+05:30').utc().format('YYYY-MM-DDTHH:mm:ssZ');
+      invoiceList = await Invoice_Number.find({purchase_date: { $gte: purchase_start_date, $lte: purchase_end_date }});
+    } else if(jsonParse.name === 'invoice number') {
+      invoiceList = await Invoice_Number.find({invoice_number: { $regex: jsonParse.invoice_number, $options: 'i' }});
+    } else if(jsonParse.name === 'product name') {
+      let productList = await Product.find({ name: { $regex: jsonParse.product_name, $options: 'i' } }, {_id: 1});
+      let stockList = await Stock.find({ product: productList }, { invoice_number: 1, _id: 0 });
+      let stockArray = [];
+      for (let i of stockList) {
+        stockArray.push({ _id: i.invoice_number })
+      }
+      invoiceList = await Invoice_Number.find({ _id: stockArray });
+      console.log(invoiceList);
+    }
+    for(let i of invoiceList) {
+      let stockList = [];
+      let stockResponse = [];
+      let invoiceResponse = {};
+      let availablecount = 0;
+      let purchasedCount = 0;
+      let company = {};
+      let typeCount = 0;
+      let typeValue = ''
+      stockList = await Stock.find({invoice_number: i._id});
+      company = await Purchase_Company.findOne({_id: i.company_name});
+      for(let j of stockList) {
+        if(j.available_quantity === j.quantity) {
+          typeCount += 1;
+        }
+        let product = await Product.findOne({_id: j.product})
+        var preparedResponse = {
+          type: j.type,
+          reason_for_return: j.reason_for_return,
+          purchase_date: j.purchase_date,
+          product: product.name,
+          quantity: j.quantity,
+          gst_percentage: j.gst_percentage,
+          hsn_code: j.hsn_code,
+          unit_price: j.unit_price,
+          cgst_cost: j.cgst_cost,
+          sgst_cost: j.sgst_cost,
+          batch_number: j.batch_number,
+          expiry_date: j.expiry_date,
+          available_quantity: j.available_quantity,
+          active: j.active,
+          weight: j.weight,
+          category: j.category,
+        }
+        purchasedCount += j.quantity;
+        availablecount += j.available_quantity;
+        stockResponse.push(preparedResponse);
+      }
+      if(stockList.length === typeCount) {
+        typeValue = 'purchased'
+      } else if(stockList.length != 0) {
+        typeValue = 'partially_returned'
+      } else {
+        typeValue = 'returned'
+      }
+      invoiceResponse = {
+        invoice_number: i.invoice_number,
+        purchase_date: i.purchase_date,
+        company_name: company.name,
+        gst_Number: i.gst_Number,
+        id: i._id,
+        available_quantity: availablecount,
+        quantity: purchasedCount,
+        stockList: stockResponse,
+        type: typeValue
+      }
+      jsonResponse.push(invoiceResponse)
+    }
+    res.status(200).json(jsonResponse)
   } catch (e) {
+    console.log(e);
     res.status(400).json('Error occured while fetching the stock')
   }
   
