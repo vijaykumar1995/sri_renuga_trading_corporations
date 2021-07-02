@@ -14,6 +14,8 @@ import WeightPage from '../src/components/pages/WeightPage';
 
 import GuestRoute from './components/routes/GuestRoute';
 import UserRoute from './components/routes/UserRoute'
+import ReturnStockPage from "./components/pages/ReturnStockPage";
+import SettingsPage from "./components/pages/SettingsPage";
 
 function App({location}) {
   return (
@@ -28,6 +30,8 @@ function App({location}) {
     <UserRoute location = { location } path = "/stock" exact component={StockPage} />
     <UserRoute location = { location } path = "/view_stock/:id" exact component={ViewStockPage} />
     <UserRoute location = { location } path = "/weight" exact component={WeightPage} />
+    <UserRoute location = { location } path = '/return_stock' exact component={ReturnStockPage} />
+    <UserRoute location = { location } path = '/settings' exact component={SettingsPage} />
     </>
   );
 }

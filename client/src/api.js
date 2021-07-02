@@ -40,5 +40,9 @@ export default {
   stock_maintainance: {
     get: () => axios.get('/api/stock_maintainance').then(res => res.data),
     updateStockDetails: () => axios.get('/api/stock_maintainance/update_stock').then(res => res.data)
+  },
+  settings: {
+    get: () => axios.get('/api/settings').then(res => res.data),
+    update: (data) => axios.post('/api/settings', {data: data}).then(res => res.data)
   }
 };
