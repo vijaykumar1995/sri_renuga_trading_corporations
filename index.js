@@ -20,7 +20,12 @@ app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.Promise = Promise;
-mongoose.connect(process.env.MONGODB_URL, {});
+mongoose.connect(process.env.MONGODB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useFindAndModify: false,
+  useCreateIndex: true
+});
 
 app.use(express.static(path.join(__dirname, 'client', 'build')));
 app.locals.appExpress = app;
